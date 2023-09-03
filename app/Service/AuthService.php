@@ -58,10 +58,10 @@ class AuthService
         $token = $user->createToken('myapptoken', ['role' => $user->role]);
         $plainTextToken = $token->plainTextToken;
         $userRole = $user->role;
-
         return [
             'token' => $plainTextToken,
             'role' => $userRole,
+            'id'=>$user->id,
         ];
     }
 }

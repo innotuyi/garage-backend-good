@@ -47,7 +47,7 @@ class AuthController extends Controller
                 $request->email,
                 $request->password
             );
-            return response()->json(['token' => $token]);
+            return response()->json($token);
         } catch (\Throwable $th) {
             throw $th;
         }

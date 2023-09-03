@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Course;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class CourseController extends Controller
 {
@@ -12,9 +13,8 @@ class CourseController extends Controller
     public function courses() {
 
         try {
-            $reponse = Course::all();
-
-         return response()->json($reponse);
+            $response = DB::select('SELECT * FROM Course');
+           return response()->json($response);
         } catch (\Throwable $th) {
             throw $th->getMessage();
         }
@@ -43,6 +43,7 @@ class CourseController extends Controller
     
         return Course::create([
             'name' => $request->file('course')->getClientOriginalName(),
+            'description'=>$request->description,
             'type' =>$request->file_type
         ]);
 

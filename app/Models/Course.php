@@ -12,6 +12,6 @@ class Course extends Model
     public $table = 'Course';
 
     protected $fillable = [
-        'name', 'type'
+        'name', 'description', 'type'
     ];
 }

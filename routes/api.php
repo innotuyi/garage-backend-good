@@ -29,9 +29,9 @@ Route::get('/course/{id}', [CourseController::class, 'course']);
 
 Route::post('/upload', [CourseController::class, 'uploadCourse']);
 
-Route::post('/enroll/{id}', [CourseEnrollmentController::class, 'enroll']);
+Route::post('/enroll/{userID}/{courseID}', [CourseEnrollmentController::class, 'enroll']);
 
-
+Route::get('/enrolled-course/{userID}', [CourseEnrollmentController::class, 'getEnrolledcourses']);
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();

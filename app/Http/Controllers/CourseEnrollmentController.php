@@ -33,7 +33,16 @@ class CourseEnrollmentController extends Controller
                     INNER JOIN Course AS b ON a.courseID = b.id
                     WHERE a.studentID = ?',[$userID]
                     );
+           return $courses;
+    }
 
+
+    public function AllEnrolledcourses()
+    {
+        $courses = DB::select("SELECT  b.id as `courseID`,  c.name AS `studentName`, c.email AS `studentEmail` FROM course_enrollments AS a
+                    INNER JOIN Course AS b ON a.courseID = b.id
+                    INNER JOIN users as c ON a.studentID = c.id
+                    ");
            return $courses;
     }
 }

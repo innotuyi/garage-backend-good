@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 use PhpParser\Node\Stmt\TryCatch;
 
 class AuthController extends Controller
@@ -19,19 +20,27 @@ class AuthController extends Controller
     }
 
     public function register(Request $request)
-    {        
+    {      
+        
         $request->validate([
             'name' => 'required',
             'email' => 'required|email|unique:users',
             'password' => 'required|min:6',
         ]);
 
-        try {
-            $this->service->registerCustomer($request->name, $request->email, $request->password);
-            return response()->json(["Users registered successfull"]);
-        } catch (\Exception $e) {
-            throw $e->getMessage();
+         $role = 'student';
+
+        if ($request->has('role')) {
+            $role = $request->input('role');
         }
+
+        try {
+            $this->service->registerCustomer($request->name, $role, $request->email, $request->password);
+            return response()->json(["Users registered successfully"]);
+        } catch (\Exception $e) {
+            throw new \Exception($e->getMessage());
+        }
+        
     }
 
 
@@ -64,6 +73,34 @@ class AuthController extends Controller
         }
     
         return response()->json(['message' => 'Logged out successfully']);
+    }
+
+ 
+    public function resetPassword(Request $request) {
+
+        $rules = [
+            'email' => 'required|email|exists:users,email',
+            'password' => 'required|string|min:8|confirmed',
+        ];
+    
+        $validator =Validator::make($request->all(), $rules);
+    
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 400);
+        }
+
+    
+        $user = User::where('email', $request->email)->first();
+    
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+    
+        $user->update([
+            'password' => Hash::make($request->password),
+        ]);
+    
+        return response()->json(['message' => 'Password reset successfully']);
     }
     
 }
